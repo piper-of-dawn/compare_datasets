@@ -1,0 +1,11 @@
+*.parquet
+*.zip
+*.ipynb
+*.pyc
+*.whl
+*.egg-info
+*.csv
+test/
+.vscode/
+__pycache__/
+dist/

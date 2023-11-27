@@ -1,0 +1,3 @@
+- Non unique column names
+- Non unique keys
+- Different number of rows
