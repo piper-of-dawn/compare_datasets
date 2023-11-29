@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "compare_datasets"
-version = "0.1.2"
+version = "0.1.3"
 description = "The library that compares two dataframes"
 authors = ["Kumar Shantanu"]
 license = "MIT"
@@ -11,7 +11,7 @@ python = ">=3.8, <=3.12"
 polars = "^0.19.5"
 tabulate = "^0.8.9"
 jinja2 = "^3.1.2"
-pandas = "^2.0.0"
+pandas = ">1.3.5"
 tqdm = "^4.66.1"
 Levenshtein = "^0.23.0"
 scipy = "^1.10.0"

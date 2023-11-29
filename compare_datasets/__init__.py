@@ -3,18 +3,20 @@ from compare_datasets.string_comparisons import StringComparisons
 from compare_datasets.numeric_comparisons import NumericComparisons
 from compare_datasets.datetime_comparison import DateTimeComparisons
 from compare_datasets.boolean_comparison import BooleanComparisons
+from compare_datasets.jaccard_similarity import JaccardSimilarity
 from compare_datasets.structure import stringify_result
+from compare_datasets.html_report import generate_body
 from datetime import datetime
 from tqdm import tqdm
-from compare_datasets.structure import calculate_jaccard_similarity, generate_report
-
+from jinja2 import Template
 class Compare:
     def __init__ (self, tested, expected, key=None, verbose=False):
         self.result = []
+        self.verbose = verbose
         self.progress_bar = tqdm(total=100,desc="Preparing datasets", bar_format="{desc}: {percentage:2.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]")
         self.progress_bar.update(5)
         self.data = PrepareForComparison(tested, expected, key, verbose=verbose, progress_bar=self.progress_bar)       
-        self.jaccard_report = calculate_jaccard_similarity(self.data.tested, self.data.expected, self.data.intersection) 
+        self.jaccard_similarity = JaccardSimilarity(prepared_data=self.data, verbose=self.data.verbose, progress_bar=self.progress_bar) 
         self.progress_bar.update(10)
         self.tested = self.data.tested
         self.expected = self.data.expected
@@ -47,7 +49,7 @@ class Compare:
         report.append("COMPARISON REPORT\n=================")
         report.append(f"OVERALL RESULT: {stringify_result(all(self.result))}")
         report.append(self.data.__str__())
-        report.append(generate_report(self.jaccard_report))
+        report.append(self.jaccard_similarity.__str__())
         if len(self.data.column_list["String Columns"]) != 0:
             report.append(self.string_comparisons.__str__())
         if len(self.data.column_list["Numeric Columns"]) != 0:
@@ -62,11 +64,21 @@ class Compare:
         return self.report()
 
       
-    def save_report (self, path=""):     
+    def get_report (self, format='txt', save_at_path=None):     
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        filename = f"report_{timestamp}.txt"
-        report = self.report()   
-        with open(f"{path}/{filename}", "w",encoding="utf-8") as f:
-            f.write(report)
-        
+        filename = f"report_{timestamp}.{format}"
+        if format == 'text':
+            report = self.report()   
+        if format == 'html':
+            data = {'content': generate_body(self), 'analysis':''}
+            if self.verbose:
+                print(data)
+            with open("compare_datasets/statics/report_template.html", "r") as f:
+                template = Template(f.read())
+            report = template.render(data)        
+        if not save_at_path is None:        
+            with open(f"{save_at_path}/{filename}", "w",encoding="utf-8") as f:
+                f.write(report)
+        return report
+            
 

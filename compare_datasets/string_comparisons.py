@@ -92,6 +92,18 @@ class StringComparisons(Comparison):
             headers=["Column Name", "Total Levenshtein Distance", "Result"],
             tablefmt="psql",
         )
+        self.report["html_report"] = tabulate(
+            [
+                (column, distance, stringify_result(result))
+                for column, distance, result in zip(
+                    self.columns_names,
+                    levenshtein_distances,
+                    levenshtein_distances == 0,
+                )
+            ],
+            headers=["Column Name", "Total Levenshtein Distance", "Result"],
+            tablefmt="html",
+        )
         self.report["differenced"] = self.differenced
 
         self.report[
@@ -100,12 +112,12 @@ class StringComparisons(Comparison):
 
         if not self.report["result"]:
             self.report[
-                "explanation"
-            ] += f"\nThe Levenshtein distance between the expected and tested dataframes is not 0 for all columns.\nThis means that the expected and tested dataframes have different string values in the same column(s)."
+                "conclusion"
+            ] = f"The Levenshtein distance between the expected and tested dataframes is not 0 for all columns.This means that the expected and tested dataframes have different string values in the same column(s)."
         else:
             self.report[
-                "explanation"
-            ] += f"\nThe Levenshtein distance between the expected and tested dataframes is 0 for all columns.\nThis means that the expected and tested dataframes have the same values for the same column(s)."
+                "conclusion"
+            ] = f"The Levenshtein distance between the expected and tested dataframes is 0 for all columns.This means that the expected and tested dataframes have the same values for the same column(s)."
 
     def __repr__ (self):
         return generate_report(self.report)

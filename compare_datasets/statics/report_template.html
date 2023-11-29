@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://api.fontshare.com/v2/css?f[]=switzer@2,1&f[]=supreme@2,1&display=swap" rel="stylesheet">
+    </head>
+    <style>
+        html {
+            scroll-behavior: smooth;
+            color: rgb(51 65 85);
+            background-color: #ffffff;
+            text-rendering: optimizeLegibility;
+            word-wrap: break-word;
+            animation: fadeIn .6s ease-in-out;
+            width: 70%;
+            margin-left: auto;
+            margin-right: auto;
+            font-family: "Switzer", "Roboto", "Arial", sans-serif;
+        }
+    
+        article {
+            margin-top: 5%;
+            min-width: 550px;
+            width: 55%;
+            margin-left: auto;
+            margin-right: auto;
+            /* position: relative; */
+            color: rgb(55, 65, 80);
+            line-height: 1.47059;
+            font-weight: regular;
+            font-size: 17px;
+            font-weight: 300;
+            text-rendering: auto;
+            height: 100%;
+            word-wrap: break-word;
+            line-height: 1.7rem;
+            font-family: "Switzer", "Roboto", "Arial", sans-serif
+        }
+    
+        blockquote {
+            margin-left: 0;
+            padding-left: 1.5rem;
+            border-left: 2px solid rgb(51 65 85);
+            font-style: italic;
+            font-family: "DM Mono", "Courier", monospace
+        }
+    
+        bold {
+            font-weight: bold;
+        }
+    
+        h1 {
+            width: 100%;
+            word-wrap: break-word;
+            position: relative;
+            font-size: 72px;
+            line-height: 1.08349;
+            font-weight: 900;
+            letter-spacing: -.003em;
+            font-family: "Switzer", "Helvetica", "Arial", sans-serif;
+        }
+    
+        h2,
+        h3,
+        h4 {
+            font-size: 21px;
+            line-height: 1.19048;
+            color: rgb(62, 79, 104);
+            letter-spacing: .011em;
+            font-weight: 800;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        }
+    
+        code {
+            font-family: 'DM Mono';
+            font-size: 1rem;
+            font-weight: 400;
+            background-color: #dfe3e8;
+            color: #1e293b;
+            padding: 0.2rem;
+            border-radius: 0.2rem;
+        }
+    
+        .toc {
+            top: 35%;
+            left: 5%;
+            margin-top: 2%;
+            position: fixed;
+            padding: 1em;
+            width: 15%;
+            line-height: 2;
+            border-radius: 18px;
+            font-size: 14px;
+            font-family: 'Switzer', 'Barlow', 'Roboto', sans-serif;
+            background-color: #f5f5f7;
+            color: rgb(51 65 85);
+            height: fit-content;
+            text-align: left;
+        }
+    
+        /* CSS Styles */
+        message {
+            display: flex;
+            align-items: center;
+            background-color: #fff8e5;
+            /* Light yellow background color */
+            padding: 10px;
+            border-radius: 8px;
+            width: 70%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 5%;
+            margin-bottom: 5%;
+            padding: 2%;
+        }
+        
+    
+        .toc ul {
+            list-style: none;
+        }
+    
+        ul>li {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    
+        .toc li a {
+            display: inline-block;
+            color: rgb(148 163 184);
+            text-decoration: none;
+            transition: all .3s cubic-bezier(.23, 1, .32, 1)
+        }
+    
+        .toc li.visible>a {
+            color: rgb(51 65 85);
+            font-weight: 600;
+            transform: translate(5px);
+        }
+    
+        .toc-marker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1
+        }
+    
+        .toc-marker path {
+            transition: all .3s ease
+        }
+    
+        @media print {
+            .toc {
+                display: none;
+            }
+        }
+        .chart {
+            margin-top: 5%;
+            margin-bottom: 5%;
+        }
+    
+        strong {
+            font-weight: bold;
+            text-shadow: -3px 0px 3px yellow, 3px 0px 3px yellow, 6px 0px 6px yellow, -6px 0px 6px yellow;
+        }
+    
+        @media only screen and (max-width: 600px) {
+            body {
+                left: 2vw;
+                top: 2vh;
+            }
+    
+            .toc {
+                visibility: hidden;
+            }
+    
+            article {
+                display: block;
+                padding: 1%;
+            }
+        }
+    
+        .highlight {
+            background: linear-gradient(104deg, rgba(255, 250, 150, 0.05) 1.9%, rgba(255, 250, 150, 1.25) 2.4%, rgba(255, 250, 150, 0.5) 5.8%, rgba(255, 250, 150, 0.1) 93%, rgba(255, 250, 150, 0.7) 96%, rgba(130, 255, 1732, 0) 98%), linear-gradient(183deg, rgba(255, 250, 150, 0) 0%, rgba(255, 250, 150, 0.3) 7.9%, rgba(255, 250, 150, 0) 15%);
+            border-radius: 9.5px;
+            width: max-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    
+        .dropdown {
+            background-color: #f5f5f7;
+            border-radius: 5px;
+            padding: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+            font-family: 'Supreme', 'Barlow', 'Roboto', sans-serif;
+            font-weight: 600;
+        }
+    
+    
+        .dropdown option {
+          padding: 12px;
+          text-decoration: none;
+          color: #333;
+        }
+    
+        table {
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: normal;
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+    background-color: white;
+}
+
+table td, table th {
+    text-align: center;
+    padding: 8px;
+}
+
+table td {
+    border-right: 1px solid #f8f8f8;
+    font-size: 12px;
+}
+
+table thead th {
+    color: #ffffff;
+    background: #4FC3A1;
+}
+
+
+table thead th:nth-child(odd) {
+    color: #ffffff;
+    background: #324960;
+}
+
+table tr:nth-child(even) {
+    background: #F8F8F8;
+}
+
+/* Responsive */
+
+@media (max-width: 767px) {
+    table {
+        display: block;
+        width: 100%;
+    }
+    .table-wrapper:before{
+        content: "Scroll horizontally >";
+        display: block;
+        text-align: right;
+        font-size: 11px;
+        color: white;
+        padding: 0 0 10px;
+    }
+    table thead, table tbody, table thead th {
+        display: block;
+    }
+    table thead th:last-child{
+        border-bottom: none;
+    }
+    table thead {
+        float: left;
+    }
+    table tbody {
+        width: auto;
+        position: relative;
+        overflow-x: auto;
+    }
+    table td, table th {
+        padding: 20px .625em .625em .625em;
+        height: 60px;
+        vertical-align: middle;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        overflow-y: auto;
+        width: 120px;
+        font-size: 13px;
+        text-overflow: ellipsis;
+    }
+    table thead th {
+        text-align: left;
+        border-bottom: 1px solid #f7f7f9;
+    }
+    table tbody tr {
+        display: table-cell;
+    }
+    table tbody tr:nth-child(odd) {
+        background: none;
+    }
+    table tr:nth-child(even) {
+        background: transparent;
+    }
+    table tr td:nth-child(odd) {
+        background: #F8F8F8;
+        border-right: 1px solid #E6E4E4;
+    }
+    table tr td:nth-child(even) {
+        border-right: 1px solid #E6E4E4;
+    }
+    table tbody td {
+        display: block;
+        text-align: center;
+    }
+}
+        :root {
+            --timing: ease
+        }
+
+        
+    </style>
+    <div class="toc"> </div>
+    <body>
+        <article>
+    {{content}}
+    {{analysis}}
+    <article>
+</body>
+<script>
+    // Path: compare_datasets/statics/report_template.html
+    var svg = '<svg class="toc-marker " width="200 " height="200 " xmlns="http://www.w3.org/1000/svg "><path stroke="#444 " stroke-width="3 " fill="transparent " stroke-dasharray="1, 0, 26, 26" stroke-linecap="round " stroke-linejoin="round " transform="translate(-0.5, -0.5) " d="M 43 16 L 43 42" opacity="1" stroke-dashoffset="1"></path></svg>';
+var toc = document.querySelector('.toc');
+toc.innerHTML = svg;
+console.log(toc)
+var longform = document.querySelector( 'article' );
+headers=document.querySelectorAll('article>section');
+// console.log(headers.length)
+    // Create a list for the ToC entries
+    tocList = document.createElement("ul");
+
+    // Get the h3 tags - ToC entries
+
+   
+   
+    for (i = 0; i < headers.length; i++){     
+      id_name = headers[i].id;
+
+      tocListItem = document.createElement("li");
+      tocEntry = document.createElement("a");
+      tocEntry.setAttribute("href","#"+id_name);
+      tocEntry.innerText=id_name;
+      child = headers[i].getElementsByTagName("section");
+      tocListItem.appendChild(tocEntry);
+      tocList.appendChild(tocListItem);
+
+      if (child.length != 0){
+      for (j = 0; j < child.length; j++){
+        tocList1 = document.createElement("ul"); 
+        tocListItem1 = document.createElement("li");
+        tocEntry1 = document.createElement("a");
+
+        tocEntry1.setAttribute("href","#"+child[j].id);
+        tocEntry1.innerText=child[j].id;
+        console.log(tocEntry1);
+
+
+        tocListItem1.appendChild(tocEntry1);
+        tocList1.appendChild(tocListItem1);
+        tocListItem.appendChild(tocList1);
+        console.log(tocListItem1);     
+      }}
+   
+    
+    
+    toc.appendChild(tocList);
+    }
+var tocPath = document.querySelector( '.toc-marker path' );
+var tocItems;
+
+// Factor of screen size that the element must cross
+// before it's considered visible
+var TOP_MARGIN = 0.1,
+    BOTTOM_MARGIN = 0.2;
+
+var pathLength;
+
+var lastPathStart,
+		lastPathEnd;
+
+window.addEventListener( 'resize', drawPath, false );
+window.addEventListener( 'scroll', sync, false );
+
+drawPath();
+
+function drawPath() {
+  
+  tocItems = [].slice.call( toc.querySelectorAll( 'li' ) );
+
+  // Cache element references and measurements
+  tocItems = tocItems.map( function( item ) {
+    var anchor = item.querySelector( 'a' );
+    var target = document.getElementById( anchor.getAttribute( 'href' ).slice( 1 ) );
+
+    return {
+      listItem: item,
+      anchor: anchor,
+      target: target
+    };
+  } );
+
+  // Remove missing targets
+  tocItems = tocItems.filter( function( item ) {
+    return !!item.target;
+  } );
+
+  var path = [];
+  var pathIndent;
+
+  tocItems.forEach( function( item, i ) {
+
+    var x = item.anchor.offsetLeft - 5,
+        y = item.anchor.offsetTop,
+        height = item.anchor.offsetHeight;
+
+    if( i === 0 ) {
+      path.push( 'M', x, y, 'L', x, y + height );
+      item.pathStart = 0;
+    }
+    else {
+      // Draw an additional line when there's a change in
+      // indent levels
+      if( pathIndent !== x ) path.push( 'L', pathIndent, y );
+
+      path.push( 'L', x, y );
+      
+      // Set the current path so that we can measure it
+      tocPath.setAttribute( 'd', path.join( ' ' ) );
+      item.pathStart = tocPath.getTotalLength() || 0;
+      
+      path.push( 'L', x, y + height );
+    }
+    
+    pathIndent = x;
+    
+    tocPath.setAttribute( 'd', path.join( ' ' ) );
+    item.pathEnd = tocPath.getTotalLength();
+
+  } );
+  
+  pathLength = tocPath.getTotalLength();
+  
+  sync();
+  
+}
+
+function sync() {
+  
+  var windowHeight = window.innerHeight;
+  
+  var pathStart = pathLength,
+      pathEnd = 0;
+  
+  var visibleItems = 0;
+  
+  tocItems.forEach( function( item ) {
+
+    var targetBounds = item.target.getBoundingClientRect();
+    
+    if( targetBounds.bottom > windowHeight * TOP_MARGIN && targetBounds.top < windowHeight * ( 1 - BOTTOM_MARGIN ) ) {
+      pathStart = Math.min( item.pathStart, pathStart );
+      pathEnd = Math.max( item.pathEnd, pathEnd );
+      
+      visibleItems += 1;
+      
+      item.listItem.classList.add( 'visible' );
+    }
+    else {
+      item.listItem.classList.remove( 'visible' );
+    }
+    
+  } );
+  
+  // Specify the visible path or hide the path altogether
+  // if there are no visible items
+  if( visibleItems > 0 && pathStart < pathEnd ) {
+    if( pathStart !== lastPathStart || pathEnd !== lastPathEnd ) {
+      tocPath.setAttribute( 'stroke-dashoffset', '1' );
+      tocPath.setAttribute( 'stroke-dasharray', '1, '+ pathStart +', '+ ( pathEnd - pathStart ) +', ' + pathLength );
+      tocPath.setAttribute( 'opacity', 1 );
+    }
+  }
+  else {
+    tocPath.setAttribute( 'opacity', 0 );
+  }
+  
+  lastPathStart = pathStart;
+  lastPathEnd = pathEnd;
+
+}
+</script>
+
+</html>
+
+

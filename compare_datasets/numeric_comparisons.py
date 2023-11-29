@@ -123,6 +123,22 @@ class NumericComparisons(Comparison):
             ],
             tablefmt="psql",
         )
+        self.report["html_report"] = tabulate(
+            [
+                (
+                    column,
+                    format_float(distance),
+                    stringify_result(result),
+                )
+                for column, distance, result in self.euclidean_differenced.rows()
+            ],
+            headers=[
+                "Column Name",
+                "Euclidean Distance",
+                "Result",
+            ],
+            tablefmt="html",
+        )
 
         self.report[
             "explanation"
@@ -130,12 +146,12 @@ class NumericComparisons(Comparison):
 
         if not self.report["result"]:
             self.report[
-                "explanation"
-            ] += f"\nThe Euclidean distance between the expected and tested dataframes is not 0 for all columns. This means that the expected and tested dataframes have different numeric values in the same column(s)."
+                "conclusion"
+            ] = f"The Euclidean distance between the expected and tested dataframes is not 0 for all columns. This means that the expected and tested dataframes have different numeric values in the same column(s)."
         else:
             self.report[
-                "explanation"
-            ] += f"\nThe Euclidean distance between the expected and tested dataframes is 0 for all columns. This means that the expected and tested dataframes have the same numeric values for the same column(s)."
+                "conclusion"
+            ] = f"The Euclidean distance between the expected and tested dataframes is 0 for all columns. This means that the expected and tested dataframes have the same numeric values for the same column(s)."
 
     def __repr__(self):
         return generate_report(self.report)

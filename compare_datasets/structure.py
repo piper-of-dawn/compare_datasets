@@ -68,21 +68,6 @@ def timeit(name=""):
 def format_float(float_value):
     return f"{float_value:.2f}"
 
-def jaccard_similarity_calculator(s1: pl.Series, s2: pl.Series) -> float:
-    """
-    This method calculates the Jaccard similarity between two series.
-    The Jaccard similarity is the size of the intersection divided by the size of the union of the two series.
-    :param s1: The first series.
-    :param s2: The second series.
-    :return: The Jaccard similarity between the two series.
-    """
-    s1 = set(s1)
-    s2 = set(s2)
-    intersection = len(s1.intersection(s2))
-    union = len(s1.union(s2))
-    if union == intersection == 0:
-        return 1
-    return intersection / union
 
 
 def generate_report (report):
@@ -93,41 +78,6 @@ def generate_report (report):
 RESULT: {stringify_result(report["result"])}
 {report["report"]}
 {report["explanation"]}
-    """
-
-def calculate_jaccard_similarity(tested, expected, columns_names):
-        report = {}
-        report["name"] = "JACCARD SIMILARITY"
-        definition = "Jaccard Similarity is defined as the size of the intersection divided by the size of the union of the sets.\nJ(A,B) = |A ∩ B| / |A ∪ B|."
-        jaccard_similarity = [
-            jaccard_similarity_calculator(expected[column], tested[column])
-            for column in columns_names
-        ]
-        result = [
-            "PASSED" if jaccard_score == 1 else "FAILED"
-            for jaccard_score in jaccard_similarity
-        ]
-        report["result"] = all(
-            jaccard_score == 1 for jaccard_score in jaccard_similarity
-        )
-        report["report"] = tabulate(
-            [
-                (column, jaccard_score, result)
-                for column, jaccard_score, result in zip(
-                    columns_names, jaccard_similarity, result
-                )
-            ],
-            headers=["Column Name", "Jaccard Similarity", "Result"],
-            tablefmt="psql",
-        )
-
-        if not report["result"]:
-            report[
-                "explanation" 
-            ] = f"{definition}\nThe Jaccard similarity between the expected and tested dataframes is not 1 for all columns.\nThis means that the expected and tested dataframes have different values for the same column(s)."
-        else:
-            report["jaccard_similarity"][
-                "explanation"
-            ] = f"{definition}\nThe Jaccard similarity between the expected and tested dataframes is 1 for all columns. This means that the expected and tested dataframes have the same values for the same column(s)."
-        return report
+{report["conclusion"]}
+"""
 

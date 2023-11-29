@@ -83,6 +83,18 @@ class BooleanComparisons(Comparison):
             headers=["Column Name", "Total XNOR", "Result"],
             tablefmt="psql",
         )
+        self.report['html_report'] = tabulate(
+            [
+                (column, distance, stringify_result(result))
+                for column, distance, result in zip(
+                    self.columns_names,
+                    xnor,
+                    xnor == 0,
+                )
+            ],
+            headers=["Column Name", "Total XNOR", "Result"],
+            tablefmt="html",
+        )
         self.report["differenced"] = self.differenced
         self.report["name"] = f"COMPARISON FOR {self.data_type} COLUMNS"
 
@@ -92,12 +104,12 @@ class BooleanComparisons(Comparison):
 
         if not self.report["result"]:
             self.report[
-                "explanation"
-            ] += f"\nThe XNOR operation between the expected and tested dataframes is not True for all columns.\nThis means that the expected and tested dataframes have different boolean values for the same column(s)."
+                "conclusion"
+            ] = f"\nThe XNOR operation between the expected and tested dataframes is not True for all columns. This means that the expected and tested dataframes have different boolean values for the same column(s)."
         else:
             self.report[
-                "explanation"
-            ] += f"\nThe XNOR operation between the expected and tested dataframes is True for all columns.\nThis means that the expected and tested dataframes have the same boolean values for the same column(s)."
+                "conclusion"
+            ] = f"\nThe XNOR operation between the expected and tested dataframes is True for all columns. This means that the expected and tested dataframes have the same boolean values for the same column(s)."
         
 
     def __repr__(self):

@@ -102,6 +102,26 @@ class DateTimeComparisons(Comparison):
             ],
             tablefmt="psql",
         )
+        self.report["html_report"] = tabulate(
+            [
+                (
+                    column,
+                    f"{str(distance)}s",
+                    stringify_result(result),
+                )
+                for column, distance, result in zip(
+                    self.columns_names,
+                    time_delta,
+                    time_delta == 0.0
+                )
+            ],
+            headers=[
+                "Column Name",
+                "Time Delta",
+                "Result",
+            ],
+            tablefmt="psql",
+        )
 
         self.report[
             "explanation"
@@ -109,12 +129,12 @@ class DateTimeComparisons(Comparison):
 
         if not self.report["result"]:
             self.report[
-                "explanation"
-            ] += f"\nThe time-delta between the expected and tested dataframes is not 0s for all columns. This means that the expected and tested dataframes do not have the same date-time values for the same column(s)."
+                "conclusion"
+            ] = f"The time-delta between the expected and tested dataframes is not 0s for all columns. This means that the expected and tested dataframes do not have the same date-time values for the same column(s)."
         else:
             self.report[
-                "explanation"
-            ] += f"\nThe time-delta between the expected and tested dataframes is 0s for all columns. This means that the expected and tested dataframes have the same date-time values for the same column(s)."
+                "conclusion"
+            ] = f"The time-delta between the expected and tested dataframes is 0s for all columns. This means that the expected and tested dataframes have the same date-time values for the same column(s)."
 
     def __repr__(self):
         return generate_report(self.report)
