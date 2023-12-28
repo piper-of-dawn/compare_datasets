@@ -19,8 +19,15 @@ logging.basicConfig(level=logging.INFO)
 
 class NumericComparisons(Comparison):
     def __init__(self, prepared_data: PrepareForComparison, verbose=False, progress_bar=None):
+        if not prepared_data.key is None:
+            self.key_data = prepared_data.tested.select(prepared_data.key)
+        else:
+            self.key_data = None
+        self.key = prepared_data.key
+        self.verbose = verbose
         self.column_list = prepared_data.column_list
         progress_bar.set_description("Preparing Numeric Comparison")
+        self.verbose and logger.info("\n\n===================Numeric Comparison Initialized=====================\n\n")
         self.tested = prepared_data.tested.select(self.column_list["Numeric Columns"])
         self.expected = prepared_data.expected.select(
             self.column_list["Numeric Columns"]
@@ -102,20 +109,29 @@ class NumericComparisons(Comparison):
         self.differenced = self.tested.select(failed_columns) - self.expected.select(
             failed_columns
         )
+        if not self.key_data is None:
+            if self.differenced.shape[0] == self.key_data.shape[0]:
+                self.verbose and logger.info(f"\nKey data and differenced data have the same number of rows")
+                self.key_data = self.key_data.rename({column: f"{column}_key" for column in self.key_data.columns})
+                self.differenced = pl.concat([self.key_data, self.differenced], how='horizontal')
+            else:
+                self.verbose and logger.info(f"Key data and differenced data have different number of rows\nNumber of rows in differenced data: {self.differenced.shape[0]}\nNumber of rows in key data: {self.key_data.shape[0]}")
+                
         self.report = {}
         self.report["name"] = "COMPARISON FOR NUMERIC COLUMNS"
         self.report["result"] = (
             self.euclidean_differenced["Euclidean Distance"].sum() == 0
         )
+      
         self.report["report"] = tabulate(
-            [
+            sorted([
                 (
                     column,
                     format_float(distance),
                     stringify_result(result),
                 )
                 for column, distance, result in self.euclidean_differenced.rows()
-            ],
+            ], key=lambda x: x[2]),
             headers=[
                 "Column Name",
                 "Euclidean Distance",
@@ -124,14 +140,14 @@ class NumericComparisons(Comparison):
             tablefmt="psql",
         )
         self.report["html_report"] = tabulate(
-            [
+            sorted([
                 (
                     column,
                     format_float(distance),
                     stringify_result(result),
                 )
                 for column, distance, result in self.euclidean_differenced.rows()
-            ],
+            ], key=lambda x: x[2]),
             headers=[
                 "Column Name",
                 "Euclidean Distance",
@@ -142,7 +158,7 @@ class NumericComparisons(Comparison):
 
         self.report[
             "explanation"
-        ] = "The numeric comparisons are done using the Euclidean distance. The Euclidean distance is a measure of the straight line distance between two points in a space.\nGiven two points P and Q with coordinates (p1, p2, ..., pn) and (q1, q2, ..., qn) respectively, the Euclidean distance d between P and Q is: d(P, Q) = sqrt((q1 - p1)² + (q2 - p2)² + ... + (qn - pn)²)\nColumns are scaled to have a unit norm (magnitude or length of 1) for calculation of the Euclidean Distance (Normalized). "
+        ] = "The numeric comparisons are done using the Euclidean distance. The Euclidean distance is a measure of the straight line distance between two points in a space.\nGiven two points P and Q with coordinates (p1, p2, ..., pn) and (q1, q2, ..., qn) respectively, the Euclidean distance d between P and Q is: d(P, Q) = sqrt((q1 - p1)² + (q2 - p2)² + ... + (qn - pn)²)."
 
         if not self.report["result"]:
             self.report[

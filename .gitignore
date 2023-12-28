@@ -9,3 +9,4 @@ test/
 .vscode/
 __pycache__/
 dist/
+*.xlsx

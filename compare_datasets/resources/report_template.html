@@ -17,6 +17,32 @@
             margin-right: auto;
             font-family: "Switzer", "Roboto", "Arial", sans-serif;
         }
+        /* Success result */
+        .PASSED {
+        background-color: #c4f3c4;
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        }
+
+        .PASSED:hover {
+        background-color: #abfcab;
+        cursor: pointer;
+        }
+
+        /* Failure result */
+        .FAILED {
+        background-color: #ff0000;
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        }
+
+        .FAILED:hover {
+        background-color: #f88080;
+        cursor: pointer;
+        }
+
     
         article {
             margin-top: 5%;
@@ -28,8 +54,8 @@
             color: rgb(55, 65, 80);
             line-height: 1.47059;
             font-weight: regular;
-            font-size: 17px;
-            font-weight: 300;
+            font-size: 14px;
+            font-weight: 400;
             text-rendering: auto;
             height: 100%;
             word-wrap: break-word;
@@ -67,7 +93,7 @@
             line-height: 1.19048;
             color: rgb(62, 79, 104);
             letter-spacing: .011em;
-            font-weight: 800;
+            font-weight: 700;
             font-family: "Roboto", "Helvetica", "Arial", sans-serif;
         }
     
@@ -219,35 +245,52 @@
     width: 100%;
     max-width: 100%;
     white-space: nowrap;
-    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Material design drop shadow */
+
+
 }
 
 table td, table th {
     text-align: center;
-    padding: 8px;
 }
 
 table td {
-    border-right: 1px solid #f8f8f8;
+
     font-size: 12px;
 }
 
-table thead th {
-    color: #ffffff;
-    background: #4FC3A1;
+
+table thead th { 
+    border-bottom: 1px solid #e0e0e0;
 }
 
-
-table thead th:nth-child(odd) {
-    color: #ffffff;
-    background: #324960;
+table tr {
+    border-bottom: 1px dotted #e0e0e0; /* Dotted bottom border for rows */
 }
 
-table tr:nth-child(even) {
-    background: #F8F8F8;
-}
+table tr:hover {
+    background-color: #f5f5f7; /* Lighter gray on hover */
+    transition: background 0.3s ease-in-out; /* Ease-in-out transition on hover */
 
-/* Responsive */
+}
+.sidenote {
+    width: 40%;
+      float: right;
+      clear: right;
+      margin-right: -20vw;
+      line-height: 1.5; 
+      text-align: left;
+      font-size: 13px;
+      padding-top: 10px;
+      
+      border-top: 2px solid black;
+
+    }
+
+p {
+    position: relative;
+}
 
 @media (max-width: 767px) {
     table {
@@ -312,12 +355,13 @@ table tr:nth-child(even) {
         text-align: center;
     }
 }
+    
+
         :root {
             --timing: ease
         }
-
-        
     </style>
+  
     <div class="toc"> </div>
     <body>
         <article>

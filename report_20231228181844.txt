@@ -1,0 +1,116 @@
+COMPARISON REPORT
+=================
+ 
+OVERALL RESULT: FAILED
+ 
+
+Count Comparison: 
+================
+RESULT: PASSED
++---------------+------------+----------+--------------+
+| Attributes    |   Expected |   Tested |   Difference |
+|---------------+------------+----------+--------------|
+| No of columns |          5 |        5 |            0 |
+| No of rows    |        230 |      230 |            0 |
++---------------+------------+----------+--------------+
+This section compares the number of columns and rows between the dataframes.
+The number of columns and rows in both the dataframes match.
+
+ 
+
+Column Names Comparison: 
+=======================
+RESULT: PASSED
++------------------------+------------------------+---------------------+---------------------+
+| Expected ∩ Tested      | Expected ∪ Tested      | Expected - Tested   | Tested - Expected   |
+|------------------------+------------------------+---------------------+---------------------|
+| ELECTRICITY_GENERATION | ELECTRICITY_GENERATION |                     |                     |
+| YEAR                   | YEAR                   |                     |                     |
+| COUNTRY                | COUNTRY                |                     |                     |
+| OIL_ELECTRICITY        | OIL_ELECTRICITY        |                     |                     |
+| COAL_ELEC_PER_CAPITA   | COAL_ELEC_PER_CAPITA   |                     |                     |
++------------------------+------------------------+---------------------+---------------------+
+This section compares the column names between the dataframes.
+The column names in both the dataframes match.
+
+ 
+
+Schema Comparison: 
+=================
+RESULT: PASSED
++------------------------+------------+----------+----------+
+| Column                 | Expected   | Tested   | Result   |
+|------------------------+------------+----------+----------|
+| ELECTRICITY_GENERATION | Float64    | Float64  | PASSED   |
+| YEAR                   | Int64      | Int64    | PASSED   |
+| COUNTRY                | Utf8       | Utf8     | PASSED   |
+| OIL_ELECTRICITY        | Float64    | Float64  | PASSED   |
+| COAL_ELEC_PER_CAPITA   | Float64    | Float64  | PASSED   |
++------------------------+------------+----------+----------+
+This section compares the schema between the dataframes.
+The schemas of both the dataframes match.
+
+ 
+
+Column Types: 
+============
+RESULT: PASSED
++------------------------+------------------+
+| Numeric Columns        | String Columns   |
+|------------------------+------------------|
+| ELECTRICITY_GENERATION | COUNTRY          |
+| YEAR                   |                  |
+| OIL_ELECTRICITY        |                  |
+| COAL_ELEC_PER_CAPITA   |                  |
++------------------------+------------------+
+This section shows the column types in both the dataframes.
+N.A.
+
+ 
+
+JACCARD SIMILARITY: 
+==================
+RESULT: FAILED
++------------------------+----------------------+----------+
+| Column Name            |   Jaccard Similarity | Result   |
+|------------------------+----------------------+----------|
+| YEAR                   |            0         | FAILED   |
+| COAL_ELEC_PER_CAPITA   |            0.0126582 | FAILED   |
+| ELECTRICITY_GENERATION |            0.0340909 | FAILED   |
+| OIL_ELECTRICITY        |            0.101852  | FAILED   |
+| COUNTRY                |            1         | PASSED   |
++------------------------+----------------------+----------+
+Jaccard Similarity is defined as the size of the intersection divided by the size of the union of the sets.
+J(A,B) = |A ∩ B| / |A ∪ B|.
+The Jaccard similarity between the expected and tested dataframes is not 1 for all columns.
+This means that the expected and tested dataframes have different values for the same column(s).
+
+ 
+
+COMPARISON FOR STRING COLUMNS: 
+=============================
+RESULT: PASSED
++---------------+------------------------------+----------+
+| Column Name   |   Total Levenshtein Distance | Result   |
+|---------------+------------------------------+----------|
+| COUNTRY       |                            0 | PASSED   |
++---------------+------------------------------+----------+
+The string comparisons are done using the Levenshtein distance. The Levenshtein distance is the minimum number of single-character edits (insertions, deletions or substitutions) required to change one word into the other.
+The Levenshtein distance between the expected and tested dataframes is 0 for all columns.This means that the expected and tested dataframes have the same values for the same column(s).
+
+ 
+
+COMPARISON FOR NUMERIC COLUMNS: 
+==============================
+RESULT: FAILED
++------------------------+----------------------+----------+
+| Column Name            |   Euclidean Distance | Result   |
+|------------------------+----------------------+----------|
+| ELECTRICITY_GENERATION |               622.5  | FAILED   |
+| YEAR                   |                15.17 | FAILED   |
+| OIL_ELECTRICITY        |                82.83 | FAILED   |
+| COAL_ELEC_PER_CAPITA   |              1951.86 | FAILED   |
++------------------------+----------------------+----------+
+The numeric comparisons are done using the Euclidean distance. The Euclidean distance is a measure of the straight line distance between two points in a space.
+Given two points P and Q with coordinates (p1, p2, ..., pn) and (q1, q2, ..., qn) respectively, the Euclidean distance d between P and Q is: d(P, Q) = sqrt((q1 - p1)² + (q2 - p2)² + ... + (qn - pn)²).
+The Euclidean distance between the expected and tested dataframes is not 0 for all columns. This means that the expected and tested dataframes have different numeric values in the same column(s).

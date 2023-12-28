@@ -12,12 +12,18 @@ logging.basicConfig(level=logging.INFO)
 
 class DateTimeComparisons(Comparison):
     def __init__(self, prepared_data: PrepareForComparison, verbose=False, progress_bar=None):
+        if not prepared_data.key is None:
+            self.key_data = prepared_data.tested.select(prepared_data.key)
+        else:
+            self.key_data = None
+        self.verbose = verbose
         self.column_list = prepared_data.column_list
         progress_bar.set_description("Preparing Datetime Comparison")
         self.tested = prepared_data.tested.select(self.column_list["Datetime Columns"])
         self.expected = prepared_data.expected.select(
             self.column_list["Datetime Columns"]
         )
+        self.verbose and logger.info("\n\n===================Datetime Comparison Initialized=====================\n\n")
  
         progress_bar.set_description("Counting Nulls for Datetime columns")
         null_counts = {
@@ -27,7 +33,7 @@ class DateTimeComparisons(Comparison):
         progress_bar.set_description("Filing Nulls with today's date for comparison")
         self.tested = self.tested.with_columns(pl.all().fill_null(datetime.today().date()))
         self.expected = self.expected.with_columns(pl.all().fill_null(datetime.today().date()))
-        super().validate(self.tested, self.expected, ["Date", "DateTime"])
+        # super().validate(self.tested, self.expected, ["Date", "DateTime"])
         self.data_type = "DATETIME"
         self.columns_names = list(self.expected.columns)
         self.report = {}
@@ -77,13 +83,20 @@ class DateTimeComparisons(Comparison):
         self.differenced = self.tested.select(failed_columns) - self.expected.select(
             failed_columns
         )
+        if not self.key_data is None:
+            if self.differenced.shape[0] == self.key_data.shape[0]:
+                self.verbose and logger.info(f"\nKey data and differenced data have the same number of rows")
+                self.key_data = self.key_data.rename({column: f"{column}_key" for column in self.key_data.columns})
+                self.differenced = pl.concat([self.key_data, self.differenced], how='horizontal')
+            else:
+                self.verbose and logger.info(f"Key data and differenced data have different number of rows\nNumber of rows in differenced data: {self.differenced.shape[0]}\nNumber of rows in key data: {self.key_data.shape[0]}")
         self.report = {}
         self.report["name"] = "COMPARISON FOR DATETIME COLUMNS"
         self.report["result"] = (
             len(failed_columns) == 0
         )
         self.report["report"] = tabulate(
-            [
+            sorted([
                 (
                     column,
                     f"{str(distance)}s",
@@ -94,7 +107,7 @@ class DateTimeComparisons(Comparison):
                     time_delta,
                     time_delta == 0.0
                 )
-            ],
+            ], key=lambda x: x[2]),
             headers=[
                 "Column Name",
                 "Time Delta",
@@ -103,7 +116,7 @@ class DateTimeComparisons(Comparison):
             tablefmt="psql",
         )
         self.report["html_report"] = tabulate(
-            [
+            sorted([
                 (
                     column,
                     f"{str(distance)}s",
@@ -114,7 +127,7 @@ class DateTimeComparisons(Comparison):
                     time_delta,
                     time_delta == 0.0
                 )
-            ],
+            ], key=lambda x: x[2]),
             headers=[
                 "Column Name",
                 "Time Delta",

@@ -39,9 +39,10 @@ tested = pl.DataFrame(
     }
 )
 from compare_datasets import Compare
-compared = Compare(tested=tested,expected=expected, key=key, verbose=False)
+key = ['id', 'another_id']
+compared = Compare(tested=tested,expected=expected, key=key) # creates a Compare object
 print(compared) # prints the tabulated result
-compared.save_report("<PATH_TO_SAVE_REPORT>")
+compared.get_report("<PATH_TO_SAVE_REPORT>, format='txt'") # saves the report to a file
 ```
 ## Use Cases
 Thisi s particularly useful (not exhaustive) in the following scenarios:
@@ -56,8 +57,6 @@ Thisi s particularly useful (not exhaustive) in the following scenarios:
 - Write a user guide
 
 ## License
-Copyright (c) 2023 Kumar Shantanu
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights

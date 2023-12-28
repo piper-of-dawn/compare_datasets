@@ -1,0 +1,106 @@
+COMPARISON REPORT
+=================
+ 
+OVERALL RESULT: FAILED
+ 
+
+Count Comparison: 
+================
+RESULT: PASSED
++---------------+------------+----------+--------------+
+| Attributes    |   Expected |   Tested |   Difference |
+|---------------+------------+----------+--------------|
+| No of columns |          3 |        3 |            0 |
+| No of rows    |        275 |      275 |            0 |
++---------------+------------+----------+--------------+
+This section compares the number of columns and rows between the dataframes.
+The number of columns and rows in both the dataframes match.
+
+ 
+
+Column Names Comparison: 
+=======================
+RESULT: PASSED
++---------------------+---------------------+---------------------+---------------------+
+| Expected ∩ Tested   | Expected ∪ Tested   | Expected - Tested   | Tested - Expected   |
+|---------------------+---------------------+---------------------+---------------------|
+| VALUE               | DATE                |                     |                     |
+| DATE                | VALUE               |                     |                     |
+| ID                  | ID                  |                     |                     |
++---------------------+---------------------+---------------------+---------------------+
+This section compares the column names between the dataframes.
+The column names in both the dataframes match.
+
+ 
+
+Schema Comparison: 
+=================
+RESULT: PASSED
++----------+------------------------------------------+------------------------------------------+----------+
+| Column   | Expected                                 | Tested                                   | Result   |
+|----------+------------------------------------------+------------------------------------------+----------|
+| DATE     | Datetime(time_unit='us', time_zone=None) | Datetime(time_unit='us', time_zone=None) | PASSED   |
+| VALUE    | Float64                                  | Float64                                  | PASSED   |
+| ID       | Int64                                    | Int64                                    | PASSED   |
++----------+------------------------------------------+------------------------------------------+----------+
+This section compares the schema between the dataframes.
+The schemas of both the dataframes match.
+
+ 
+
+Column Types: 
+============
+RESULT: PASSED
++-------------------+--------------------+
+| Numeric Columns   | Datetime Columns   |
+|-------------------+--------------------|
+| VALUE             | DATE               |
+| ID                |                    |
++-------------------+--------------------+
+This section shows the column types in both the dataframes.
+N.A.
+
+ 
+
+JACCARD SIMILARITY: 
+==================
+RESULT: FAILED
++---------------+----------------------+----------+
+| Column Name   |   Jaccard Similarity | Result   |
+|---------------+----------------------+----------|
+| DATE          |             0.815182 | FAILED   |
+| VALUE         |             1        | PASSED   |
+| ID            |             1        | PASSED   |
++---------------+----------------------+----------+
+Jaccard Similarity is defined as the size of the intersection divided by the size of the union of the sets.
+J(A,B) = |A ∩ B| / |A ∪ B|.
+The Jaccard similarity between the expected and tested dataframes is not 1 for all columns.
+This means that the expected and tested dataframes have different values for the same column(s).
+
+ 
+
+COMPARISON FOR NUMERIC COLUMNS: 
+==============================
+RESULT: PASSED
++---------------+----------------------+----------+
+| Column Name   |   Euclidean Distance | Result   |
+|---------------+----------------------+----------|
+| VALUE         |                    0 | PASSED   |
+| ID            |                    0 | PASSED   |
++---------------+----------------------+----------+
+The numeric comparisons are done using the Euclidean distance. The Euclidean distance is a measure of the straight line distance between two points in a space.
+Given two points P and Q with coordinates (p1, p2, ..., pn) and (q1, q2, ..., qn) respectively, the Euclidean distance d between P and Q is: d(P, Q) = sqrt((q1 - p1)² + (q2 - p2)² + ... + (qn - pn)²).
+The Euclidean distance between the expected and tested dataframes is 0 for all columns. This means that the expected and tested dataframes have the same numeric values for the same column(s).
+
+ 
+
+COMPARISON FOR DATETIME COLUMNS: 
+===============================
+RESULT: FAILED
++---------------+--------------+----------+
+| Column Name   | Time Delta   | Result   |
+|---------------+--------------+----------|
+| DATE          | 665280000.0s | FAILED   |
++---------------+--------------+----------+
+The date-time comparison is done by calculating the time-delta between the expected and tested dataframes. The time-delta is calculated by subtracting the timestamp in tested dataframe from the expected dataframe. If the time-delta is 0s, then the expected and tested dataframes have the same date-time values for the same column(s).
+The time-delta between the expected and tested dataframes is not 0s for all columns. This means that the expected and tested dataframes do not have the same date-time values for the same column(s).

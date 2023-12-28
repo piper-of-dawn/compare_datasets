@@ -18,7 +18,7 @@ class JaccardSimilarity:
         self.tested = prepared_data.tested
         self.expected = prepared_data.expected
         progress_bar.set_description("Counting Nulls for string columns")
-        self.columns_names = list(self.expected.columns)
+        self.columns_names = prepared_data.intersection
         self.report = {}
         self.report["name"] = "Jaccard Similarity"
         self.compare()
@@ -64,12 +64,12 @@ class JaccardSimilarity:
             jaccard_score == 1 for jaccard_score in jaccard_similarity
         )
         report["report"] = tabulate(
-            [
+            sorted([
                 (column, jaccard_score, result)
                 for column, jaccard_score, result in zip(
                     self.columns_names, jaccard_similarity, result
                 )
-            ],
+            ], key=lambda x: x[1]),
             headers=["Column Name", "Jaccard Similarity", "Result"],
             tablefmt="psql",
         )

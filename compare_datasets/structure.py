@@ -70,7 +70,7 @@ def format_float(float_value):
 
 
 
-def generate_report (report):
+def generate_report (report: dict):
     name_length = len(report["name"])
     return f"""
 {report["name"]}: 
