@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "compare_datasets"
-version = "0.1.16"
+version = "0.1.18"
 description = "The library that compares two dataframes"
 authors = ["Kumar Shantanu"]
 license = "MIT"

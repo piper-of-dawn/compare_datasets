@@ -1,2 +1,6 @@
-- Fix Verbosity
-- key intersection is creating a problem with multiple keys
+- FIXME Result dictionary is messed up in prepare.py
+- TODO Add a proper test case
+
+
+## Feature Roadmap
+- Add a metadata report

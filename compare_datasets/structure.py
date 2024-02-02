@@ -20,6 +20,7 @@ class Comparison(ABC):
 
     # @abstractmethod
     def validate(self, tested, expected, data_type, verbose=False):
+        # I don't have a good feeling about this function. Find a better way to do it.
         data_type = [data_type] if isinstance(data_type, str) else data_type
         schema_of_expected = expected.schema
         schema_of_tested = tested.schema
@@ -71,13 +72,16 @@ def format_float(float_value):
 
 
 def generate_report (report: dict):
+    if not isinstance(report['result'], bool) and not report['result'] is None:
+        raise TypeError(f"Expected boolean, got {type(report['result'])} in the report generator in the {report['name']} comparison. Rogue value: {report['result']}")
     name_length = len(report["name"])
     return f"""
 {report["name"]}: 
 {"="*name_length}
-RESULT: {stringify_result(report["result"])}
+RESULT: {stringify_result(report["result"]) if isinstance(report["result"], bool) else "Not Applicable"}
 {report["report"]}
 {report["explanation"]}
 {report["conclusion"]}
 """
+
 

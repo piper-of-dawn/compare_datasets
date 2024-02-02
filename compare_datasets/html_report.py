@@ -1,11 +1,12 @@
 from jinja2 import Template
+from compare_datasets.structure import stringify_result
 template_string = """
 <section id="{{ name }}">
 <h2>{{ name }}</h2> 
 
 <p class="sidenote">{{ explanation }}</p>
 
-<h5 class={{result}}>{{ result }}</h5>
+<h5 class={{stringified_result}}>{{ stringified_result }}</h5>
 
 <p>{{ html_report }}</p>
 
@@ -15,6 +16,7 @@ template_string = """
 
 def generate_html_element (report_dictionary):    
     template = Template(template_string)
+    report_dictionary['stringified_result'] = stringify_result(report_dictionary['result'])
     if isinstance(report_dictionary, list):
         print(report_dictionary[-1])
         for r in report_dictionary:

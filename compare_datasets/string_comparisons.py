@@ -38,7 +38,7 @@ class StringComparisons(Comparison):
         self.tested = self.tested.with_columns(pl.all().fill_null(""))
         self.expected = self.expected.with_columns(pl.all().fill_null(""))
         try:
-            super().validate(self.tested, self.expected, "Utf8")
+            super().validate(self.tested, self.expected, ["Utf8", "String"], verbose=self.verbose)
         except:
             raise Exception("This is a bug in compare_datasets. Please raise an issue on github.")
         self.data_type = "STRING"

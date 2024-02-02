@@ -87,12 +87,14 @@ class NumericComparisons(Comparison):
                 (
                     c,
                     distance.euclidean(self.expected[c], self.tested[c]),
+                    distance.euclidean(self.expected[c]/np.linalg.norm(self.expected[c]), self.tested[c]/np.linalg.norm(self.tested[c]))
                 )
                 for c in self.columns_names
             ],
             schema=[
                 "Column Name",
                 "Euclidean Distance",
+                "Normalized Euclidean Distance"
             ],
         )
         return differenced.with_columns(
@@ -128,13 +130,15 @@ class NumericComparisons(Comparison):
                 (
                     column,
                     format_float(distance),
+                    format_float(normalized_euclidean_distance),
                     stringify_result(result),
                 )
-                for column, distance, result in self.euclidean_differenced.rows()
+                for column, distance, normalized_euclidean_distance, result in self.euclidean_differenced.rows()
             ], key=lambda x: x[2]),
             headers=[
                 "Column Name",
                 "Euclidean Distance",
+                "Normalized Euclidean Distance",
                 "Result",
             ],
             tablefmt="psql",
@@ -144,13 +148,15 @@ class NumericComparisons(Comparison):
                 (
                     column,
                     format_float(distance),
+                    format_float(normalized_euclidean_distance),
                     stringify_result(result),
                 )
-                for column, distance, result in self.euclidean_differenced.rows()
+                for column, distance, normalized_euclidean_distance, result in self.euclidean_differenced.rows()
             ], key=lambda x: x[2]),
             headers=[
                 "Column Name",
                 "Euclidean Distance",
+                "Normalized Euclidean Distance",
                 "Result",
             ],
             tablefmt="html",
@@ -158,7 +164,7 @@ class NumericComparisons(Comparison):
 
         self.report[
             "explanation"
-        ] = "The numeric comparisons are done using the Euclidean distance. The Euclidean distance is a measure of the straight line distance between two points in a space.\nGiven two points P and Q with coordinates (p1, p2, ..., pn) and (q1, q2, ..., qn) respectively, the Euclidean distance d between P and Q is: d(P, Q) = sqrt((q1 - p1)² + (q2 - p2)² + ... + (qn - pn)²)."
+        ] = "The numeric comparisons are done using the Euclidean distance. The Euclidean distance is a measure of the straight line distance between two points in a space.\nGiven two points P and Q with coordinates (p1, p2, ..., pn) and (q1, q2, ..., qn) respectively, the Euclidean distance d between P and Q is: d(P, Q) = sqrt((q1 - p1)² + (q2 - p2)² + ... + (qn - pn)²).\nThe normalized Euclidean distance is the Euclidean distance between the normalized columns, that is, each column is divided by its respective norm.\n"
 
         if not self.report["result"]:
             self.report[

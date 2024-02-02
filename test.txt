@@ -24,9 +24,9 @@ RESULT: PASSED
 +---------------------+---------------------+---------------------+---------------------+
 | Expected ∩ Tested   | Expected ∪ Tested   | Expected - Tested   | Tested - Expected   |
 |---------------------+---------------------+---------------------+---------------------|
-| VALUE               | DATE                |                     |                     |
-| DATE                | VALUE               |                     |                     |
-| ID                  | ID                  |                     |                     |
+| ID                  | DATE                |                     |                     |
+| DATE                | ID                  |                     |                     |
+| VALUE               | VALUE               |                     |                     |
 +---------------------+---------------------+---------------------+---------------------+
 This section compares the column names between the dataframes.
 The column names in both the dataframes match.
@@ -40,8 +40,8 @@ RESULT: PASSED
 | Column   | Expected                                 | Tested                                   | Result   |
 |----------+------------------------------------------+------------------------------------------+----------|
 | DATE     | Datetime(time_unit='us', time_zone=None) | Datetime(time_unit='us', time_zone=None) | PASSED   |
-| VALUE    | Float64                                  | Float64                                  | PASSED   |
 | ID       | Int64                                    | Int64                                    | PASSED   |
+| VALUE    | Float64                                  | Float64                                  | PASSED   |
 +----------+------------------------------------------+------------------------------------------+----------+
 This section compares the schema between the dataframes.
 The schemas of both the dataframes match.
@@ -50,12 +50,12 @@ The schemas of both the dataframes match.
 
 Column Types: 
 ============
-RESULT: PASSED
+RESULT: Not Applicable
 +-------------------+--------------------+
 | Numeric Columns   | Datetime Columns   |
 |-------------------+--------------------|
-| VALUE             | DATE               |
-| ID                |                    |
+| ID                | DATE               |
+| VALUE             |                    |
 +-------------------+--------------------+
 This section shows the column types in both the dataframes.
 N.A.
@@ -69,8 +69,8 @@ RESULT: FAILED
 | Column Name   |   Jaccard Similarity | Result   |
 |---------------+----------------------+----------|
 | DATE          |             0.815182 | FAILED   |
-| VALUE         |             1        | PASSED   |
 | ID            |             1        | PASSED   |
+| VALUE         |             1        | PASSED   |
 +---------------+----------------------+----------+
 Jaccard Similarity is defined as the size of the intersection divided by the size of the union of the sets.
 J(A,B) = |A ∩ B| / |A ∪ B|.
@@ -82,14 +82,16 @@ This means that the expected and tested dataframes have different values for the
 COMPARISON FOR NUMERIC COLUMNS: 
 ==============================
 RESULT: PASSED
-+---------------+----------------------+----------+
-| Column Name   |   Euclidean Distance | Result   |
-|---------------+----------------------+----------|
-| VALUE         |                    0 | PASSED   |
-| ID            |                    0 | PASSED   |
-+---------------+----------------------+----------+
++---------------+----------------------+---------------------------------+----------+
+| Column Name   |   Euclidean Distance |   Normalized Euclidean Distance | Result   |
+|---------------+----------------------+---------------------------------+----------|
+| ID            |                    0 |                               0 | PASSED   |
+| VALUE         |                    0 |                               0 | PASSED   |
++---------------+----------------------+---------------------------------+----------+
 The numeric comparisons are done using the Euclidean distance. The Euclidean distance is a measure of the straight line distance between two points in a space.
 Given two points P and Q with coordinates (p1, p2, ..., pn) and (q1, q2, ..., qn) respectively, the Euclidean distance d between P and Q is: d(P, Q) = sqrt((q1 - p1)² + (q2 - p2)² + ... + (qn - pn)²).
+The normalized Euclidean distance is the Euclidean distance between the normalized columns, that is, each column is divided by its respective norm.
+
 The Euclidean distance between the expected and tested dataframes is 0 for all columns. This means that the expected and tested dataframes have the same numeric values for the same column(s).
 
  

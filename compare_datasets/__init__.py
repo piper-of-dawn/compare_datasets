@@ -17,81 +17,19 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 class Compare:
-    """
-    Compare class is used to compare two datasets and generate a comparison report.
-
-    Args:
-        tested (pandas.DataFrame): The tested dataset.
-        expected (pandas.DataFrame): The expected dataset.
-        key (str, optional): The key column used for matching rows between the datasets. Defaults to None.
-        verbose (bool, optional): Whether to display verbose output. Defaults to False.
-        low_memory (bool, optional): Whether to use low memory mode for comparison. Defaults to False.
-
-    Attributes:
-        verbose (bool): Whether verbose output is enabled.
-        progress_bar (tqdm.tqdm): Progress bar for tracking the comparison progress.
-        data (PrepareForComparison): Object for preparing the datasets for comparison.
-        result (list): List of comparison results.
-        jaccard_similarity (JaccardSimilarity): Object for calculating Jaccard similarity.
-        tested (pandas.DataFrame): The prepared tested dataset.
-        expected (pandas.DataFrame): The prepared expected dataset.
-        string_comparisons (StringComparisons): Object for comparing string columns.
-        numeric_comparisons (NumericComparisons): Object for comparing numeric columns.
-        date_comparisons (DateTimeComparisons): Object for comparing datetime columns.
-        boolean_comparisons (BooleanComparisons): Object for comparing boolean columns.
-
-    Methods:
-        report(): Generates a comparison report.
-        get_report(format='txt', save_at_path=None): Generates and optionally saves the comparison report.
-
-    """
-
-    def __init__ (self, tested, expected, key=None, verbose=False, low_memory=False):
-        """
-        Initializes a new instance of the Compare class.
-
-        Args:
-            tested (pandas.DataFrame): The tested dataset.
-            expected (pandas.DataFrame): The expected dataset.
-            key (str, optional): The key column used for matching rows between the datasets. Defaults to None.
-            verbose (bool, optional): Whether to display verbose output. Defaults to False.
-            low_memory (bool, optional): Whether to use low memory mode for comparison. Defaults to False.
-        """
-        # Code implementation...
-
-    def report (self):
-        """
-        Generates a comparison report.
-
-        Returns:
-            str: The comparison report.
-        """
-        # Code implementation...
-
-    def get_report (self, format='txt', save_at_path=None):
-        """
-        Generates and optionally saves the comparison report.
-
-        Args:
-            format (str, optional): The format of the report. Defaults to 'txt'.
-            save_at_path (str, optional): The path to save the report. Defaults to None.
-
-        Returns:
-            str: The comparison report.
-        """
-        # Code implementation...
-class Compare:
     
-    def __init__ (self, tested, expected, key=None, verbose=False, low_memory=False, strict_schema=False, tolerance=4):
+    def __init__ (self, tested, expected, key=None, verbose=False, low_memory=False, strict_schema=False, case_sensitive_column_names=False, numeric_tolerance=4):
+        
         self.verbose = verbose
         self.progress_bar = tqdm(total=100,desc="Preparing datasets", bar_format="{desc}: {percentage:2.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]")
         self.progress_bar.update(5)
-        self.data = PrepareForComparison(tested, expected, key, verbose=verbose, progress_bar=self.progress_bar, low_memory=low_memory, strict_schema=strict_schema, numeric_tolerance=tolerance)       
-        self.result = [self.data.result]
+        self.data = PrepareForComparison(tested, expected, key, verbose=verbose, progress_bar=self.progress_bar, low_memory=low_memory, strict_schema=strict_schema, case_sensitive_columns=case_sensitive_column_names, numeric_tolerance=numeric_tolerance)       
+        self.result = [self.data.overall_result]
         self.jaccard_similarity = JaccardSimilarity(prepared_data=self.data, verbose=self.data.verbose, progress_bar=self.progress_bar) 
         self.progress_bar.update(10)
         self.tested = self.data.tested
         self.expected = self.data.expected
+        self.metadata = self.__metadata__()
         
         if len(self.data.column_list["String Columns"]) != 0:        
             self.string_comparisons = StringComparisons(prepared_data=self.data, verbose=self.data.verbose,progress_bar=self.progress_bar, low_memory=low_memory)
@@ -136,7 +74,12 @@ class Compare:
         return self.report()
 
       
-    def get_report (self, save_at_path=None, filename=None, format='txt',):     
+    def get_report (self, save_at_path=None, filename=None, format='txt', tested_frame_name=None, expected_frame_name=None, conclusion=None):
+        
+        if not tested_frame_name is None:
+            self.metadata['Tested Frame Name'] = tested_frame_name
+        if not expected_frame_name is None:
+            self.metadata['Expected Frame Name'] = expected_frame_name     
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         if filename is None:
             filename = f"report_{timestamp}.{format}"
@@ -161,5 +104,11 @@ class Compare:
         with open(save_at_path, "w",encoding="utf-8") as f:
                 f.write(report)
         return f"Report has been successfully saved at: {save_at_path}"
+    
+    def __metadata__ (self):
+        return {
+            "Execution Time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Compared on": self.data.key,    
+        }
             
 

@@ -96,7 +96,7 @@ class PrepareForComparison:
         self._numeric_types = [ pl.Int64, pl.Float64, pl.UInt64, pl.Int32, pl.Float32, pl.UInt32, pl.Int16, pl.UInt16, pl.Int8, pl.Int8, ]
         self._datetime_types = [pl.Date, pl.Datetime]
         self._boolean_types = [pl.Boolean]
-        self._string_types = [pl.Utf8]
+        self._string_types = [pl.Utf8, pl.String]
         self._list_types = ["List"]
         self._category_types = [pl.Categorical]       
         
@@ -133,7 +133,7 @@ class PrepareForComparison:
         
         
         progress_bar.update(5)
-        self.result = self.result["count_result"]['result'] and self.result["column_names_result"] and self.result["schema_result"]
+        self.overall_result = self.result["count_result"]['result'] and self.result["column_names_result"] and self.result["schema_result"]
         self.report = [self.__report__[key] for key in self.__report__ if key in  ["count_report", "column_names_report", "schema_report", "column_types_report"]]
         
 
@@ -165,14 +165,13 @@ class PrepareForComparison:
         self.result["count_result"] = {
             "row_count_result": row_and_column_counts["Difference"][0] == 0,
             "column_count_result": row_and_column_counts["Difference"][1] == 0,
-            "result": row_and_column_counts["Difference"][0] == 0
-            and row_and_column_counts["Difference"][1] == 0,
+            "result": (row_and_column_counts["Difference"][0] == 0) and (row_and_column_counts["Difference"][1] == 0),
         }
 
         report = {
             "name": "Count Comparison",
             "explanation": "This section compares the number of columns and rows between the dataframes.",
-            "result": self.result["count_result"]["result"],
+            "result": (row_and_column_counts["Difference"][0] == 0) and (row_and_column_counts["Difference"][1] == 0),
             "report": tabulate(row_and_column_counts, headers="keys", tablefmt="psql"),
             "html_report": tabulate(row_and_column_counts, headers="keys", tablefmt="html"),            
         }
@@ -182,10 +181,9 @@ class PrepareForComparison:
         else:
             report["conclusion"] = "The number of columns and rows in both the dataframes do not match."
 
-        self.__report__["count_report"] = report
-        
+        self.__report__["count_report"] = report     
 
-        return self.row_and_column_counts
+        return (row_and_column_counts["Difference"][0] == 0) and (row_and_column_counts["Difference"][1] == 0)
 
     def testColumnNames(self):
         """
@@ -194,7 +192,7 @@ class PrepareForComparison:
         Returns:
             dict: A dictionary containing the intersection and difference between expected and tested dataframes.
         """
-        self.verbose and logger.info("================TESTING COLUMN NAMES================")
+        self.verbose and logger.info("\n\n================ TESTING COLUMN NAMES ================\n\n")
     
             
         self.intersection = set(self.expected.columns).intersection(
@@ -222,7 +220,7 @@ class PrepareForComparison:
             "explanation": "This section compares the column names between the dataframes.",
             "report": tabulate(self.column_comparison, headers="keys", tablefmt="psql"),
             "html_report": tabulate(self.column_comparison, headers="keys", tablefmt="html"),
-            "result": stringify_result(self.result["column_names_result"]),
+            "result": self.result["column_names_result"],
         }
 
         if self.result["column_names_result"]:
@@ -312,6 +310,9 @@ class PrepareForComparison:
             "Tested": [self.getDataType(self.tested, column) for column in all_columns],
             "Result": [stringify_result(self.getDataType(self.expected, column) == self.getDataType(self.tested, column)) for column in all_columns],
         }
+        transpose = lambda l: list(map(list, zip(*l)))
+        self.schema_comparison = {k:v for k,v in zip(self.schema_comparison.keys(), transpose(sorted(zip(*self.schema_comparison.values()), key=lambda x: x[3])))}
+
         self.mismatched_schema = [
             column
             for column in all_columns
@@ -319,29 +320,33 @@ class PrepareForComparison:
             != self.getDataType(self.tested, column)
         ]
         if self.verbose:
+            logger.info("\n\n=================== Schema Comparison =====================\n\n")
             logger.info(f"Schema comparison: {self.schema_comparison}")
             logger.info(f"Mismatched schema: {self.mismatched_schema}")
-        self.result["schema_result"] = len(self.mismatched_schema) == 0
+            logger.info(f"Schema result: {len(self.mismatched_schema) == 0}")
+
+        result = len(self.mismatched_schema) == 0
+        self.result["schema_result"] = result
 
         report = {
             "name": "Schema Comparison",
             "explanation": "This section compares the schema between the dataframes.",
             "report": tabulate(self.schema_comparison, headers=['Column', 'Expected', 'Tested', 'Result'], tablefmt='psql'),
             "html_report": tabulate(self.schema_comparison, headers=['Column', 'Expected', 'Tested', 'Result'], tablefmt='html'),
-            "result": stringify_result(self.result["schema_result"]),
+            "result": result,
         }
-        if self.result["schema_result"]:
+
+        if result:
             report["conclusion"] = "The schemas of both the dataframes match."
         else:
             report["conclusion"] = "The schemas of both the dataframes do not match."
 
         self.__report__[ "schema_report" ] = report      
-        return self.result["schema_result"]
+        return result
 
     def __partitionOnColumnTypes__(self):
         intersection = self.intersection - set(self.mismatched_schema)
         self.intersection = intersection
-        self.testSchema()
         self._numeric_columns = [
             column
             for column in intersection
@@ -391,7 +396,7 @@ class PrepareForComparison:
         report  = {
             "name": "Column Types",
             "explanation": "This section shows the column types in both the dataframes.",
-            "result": "N.A.",
+            "result": None,
             "report": tabulate({k: v for k, v in self.column_list.items() if len(v) > 0}, headers='keys', tablefmt='psql'),
             "html_report": tabulate({k: v for k, v in self.column_list.items() if len(v) > 0}, headers='keys', tablefmt='html'),
             "conclusion": "N.A."
